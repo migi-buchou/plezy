@@ -1,3 +1,9 @@
+this is a personal fork of [Plezy](https://github.com/edde746/plezy) by edde746 to allow plezy to sync to anilist when your anime library is managed by [Shokofin](https://github.com/ShokoAnime/Shokofin). this might work for the jellyfin anidb plugin as well, or other tracking sites such as MAL or simkl, but i dont use them and havent tested it. **currently shoko groups arent supported and only the default layout works right**. with groups only season 1 will sync. i might fix this in the future
+
+**you should probably not have tmdb or tvdb ids enabled in your shokofin settings to avoid syncing progress to the wrong anime.**
+
+the change is currently only on the `anidb-jellyfin` branch.
+
 <h1>
   <img src="assets/plezy.png" alt="Plezy Logo" height="24" style="vertical-align: middle;" />
   Plezy
