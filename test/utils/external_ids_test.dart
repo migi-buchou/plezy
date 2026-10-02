@@ -172,5 +172,16 @@ void main() {
       expect(ids.tmdb, isNull);
       expect(ids.imdb, 'tt12345');
     });
+
+    test('extracts AniDB (Shokofin / AniDB plugin)', () {
+      final ids = ExternalIds.fromJellyfinProviderIds({'AniDB': '11905', 'Shoko Series': '5'});
+      expect(ids.anidb, 11905);
+      expect(ids.hasAny, isTrue);
+      expect(ids.hasCatalogIds, isFalse);
+    });
+
+    test('ignores a non-numeric AniDB value', () {
+      expect(ExternalIds.fromJellyfinProviderIds({'AniDB': 'abc'}).anidb, isNull);
+    });
   });
 }

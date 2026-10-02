@@ -59,10 +59,16 @@ class ExternalIds {
   final int? tmdb;
   final int? tvdb;
 
-  /// AniDB series id, only ever produced by Plex's HAMA agent. Separate from
-  /// the three catalog ids because almost nothing accepts it: it names a Fribb
-  /// row (and through it MAL/AniList/Simkl) but Trakt, Plex Discover, Seerr and
-  /// the Anime-Lists episode mappings are all keyed the other way.
+  /// AniDB anime id. Produced by Plex's HAMA agent and, on Jellyfin, by the
+  /// Shokofin and AniDB plugins (the `AniDB` provider id on series, seasons and
+  /// movies). Separate from the three catalog ids because almost nothing
+  /// accepts it: it names a Fribb row (and through it MAL/AniList/Simkl) but
+  /// Trakt, Plex Discover, Seerr and the Anime-Lists episode mappings are all
+  /// keyed the other way.
+  ///
+  /// On a Jellyfin *episode* the same `AniDB` key holds an AniDB episode id, a
+  /// different number space. Tracker and catalog lookups read show and movie
+  /// ids only, so that value is never used.
   final int? anidb;
 
   const ExternalIds({this.imdb, this.tmdb, this.tvdb, this.anidb});
@@ -224,11 +230,12 @@ class ExternalIds {
 
   /// Build from a Jellyfin `ProviderIds` map. Jellyfin stores external IDs
   /// directly on every `BaseItemDto` so no extra fetch is needed.
-  /// Keys are case-insensitive in practice (`Tmdb`, `Imdb`, `Tvdb`).
+  /// Keys are case-insensitive in practice (`Tmdb`, `Imdb`, `Tvdb`, `AniDB`).
   factory ExternalIds.fromJellyfinProviderIds(Map<String, Object?> providerIds) {
     String? imdb;
     int? tmdb;
     int? tvdb;
+    int? anidb;
     providerIds.forEach((key, value) {
       if (value is! String || value.isEmpty) return;
       switch (key.toLowerCase()) {
@@ -241,8 +248,11 @@ class ExternalIds {
         case 'tvdb':
           tvdb = int.tryParse(value);
           break;
+        case 'anidb':
+          anidb = _parseNumericId(value);
+          break;
       }
     });
-    return ExternalIds(imdb: imdb, tmdb: tmdb, tvdb: tvdb);
+    return ExternalIds(imdb: imdb, tmdb: tmdb, tvdb: tvdb, anidb: anidb);
   }
 }
